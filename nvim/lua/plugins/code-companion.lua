@@ -1,0 +1,22 @@
+-- lazy.nvim
+return {
+  -- 'olimorris/codecompanion.nvim',
+  -- dependencies = {
+  --   'nvim-lua/plenary.nvim',
+  --   'nvim-treesitter/nvim-treesitter',
+  -- },
+  -- opts = {
+  --   strategies = {
+  --     chat = {
+  --       adapter = 'anthropic',
+  --     },
+  --     inline = {
+  --       adapter = 'anthropic',
+  --     },
+  --   },
+  --   adapters = {},
+  -- },
+  -- config = function(_, opts)
+  --   require('codecompanion').setup(opts)
+  -- end,
+}

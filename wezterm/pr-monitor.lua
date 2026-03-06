@@ -1,0 +1,1 @@
+/Volumes/data/projects/personal/pr-monitor/wezterm/pr-monitor.lua

@@ -1,0 +1,84 @@
+# ===========================================
+# Secrets & Credentials
+# ===========================================
+# ArgoCD auth tokens
+argocd/config
+
+# Docker registry credentials
+containers/auth.json
+
+# Exercism API token
+exercism/user.json
+
+# GitHub Copilot OAuth tokens + databases
+github-copilot/
+
+# GitHub CLI auth (stores OAuth tokens)
+gh/hosts.yml
+
+# Code-server password
+code-server/config.yaml
+
+# Raycast access tokens
+raycast/config.json
+
+# Atlassian CLI configs (email, cloud IDs, auth)
+acli/
+
+# ===========================================
+# Nested Git Repos (tracked separately)
+# ===========================================
+dotfiles/
+devEx/
+
+# ===========================================
+# Generated / Runtime / Large Files
+# ===========================================
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Node modules
+**/node_modules/
+
+# SQLite databases and journals
+*.db
+*.db-shm
+*.db-wal
+
+# PR monitor runtime state
+pr-monitor/status.json
+
+# Raycast extensions (50MB, re-downloadable)
+raycast/extensions/
+raycast/ai/
+
+# Alacritty themes (47MB, re-downloadable via git submodule or download)
+alacritty/themes/
+
+# NPM update notifier state
+configstore/
+
+# Yarn cache/state
+yarn/
+
+# Backup directory (old nvim configs)
+backup/
+
+# Claude project caches
+.claude/
+
+# Opencode (has node_modules, lock files)
+opencode/
+
+# Gokata (empty)
+gokata/
+
+# Zed LMDB databases (binary, not portable)
+zed/prompts/
+
+# Yazi temp/backup files, shell history, and installed flavors/plugins (reinstall via `ya pack -i`)
+yazi/*.toml-*
+yazi/plugins/custom-shell.yazi/yazi_cmd_history
+yazi/flavors/*/
+yazi/plugins/*/
