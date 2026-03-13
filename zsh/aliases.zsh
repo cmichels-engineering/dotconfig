@@ -1,26 +1,22 @@
 #!/bin/sh
 
-
 alias zsh-update-plugins="find "$ZDOTDIR/plugins" -type d -exec test -e '{}/.git' ';' -print0 | xargs -I {} -0 git -C {} pull -q"
 
 alias e="exit"
-# Colorize grep output (good for log files)
+
+# colorize grep
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
-# confirm before overwriting something
+# safety
 alias cp="cp -i"
 alias mv='mv -i'
 alias rm='rm -i'
 
-# easier to read disk
-alias df='df -h'     # human-readable sizes
-alias free='free -m' # show sizes in MB
-
-
-# brew
-alias bb="brew bundle"
+# disk
+alias df='df -h'
+alias free='free -m'
 
 # zsh
 alias zshconfig="nvim ~/.config/zsh"
@@ -29,16 +25,8 @@ alias sourceme="source ~/.zshrc"
 alias notes="nvim ~/drafts.txt"
 alias vnotes="nvim ~/vnotes.txt"
 
-
 # java
 alias gw="./gradlew"
-alias javamode="export SDKMAN_DIR="$HOME/.sdkman" && [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh""
-
-# npm 
-alias nodemode="source <(ng completion script)"
-
-# pulumi
-alias pulumimode="p_azure_key && p_azure_account"
 
 # nvim
 alias nvimrc="nvim ~/.config/nvim"
@@ -58,17 +46,14 @@ alias d="docker"
 alias dc="docker compose"
 
 # kubectl
-alias k=kubectl
 alias kc=kubecolor
 alias kk="kubectl kustomize"
-
 
 # terraform
 alias tf="terraform"
 alias tfi="terraform init"
 alias tfa="terraform apply"
 alias tfp="terraform plan"
-alias tfmode=""
 
 # tools
 alias cat="bat"
@@ -84,19 +69,15 @@ alias gosingle="go test ./internal/events -run TestEventsSuiteRunner/TestEventSe
 # lazygit
 alias lg="lazygit"
 
-# yoink
-alias yo="open -a yoink"
-
-# alias v2g='function video_to_gif(){ ffmpeg -i "$1" "${1%.*}.gif" && gifsicle -O3 --lossy=80 --colors=64 --scale 0.8 "${1%.*}.gif" -o "${1%.*}.gif" && osascript -e "display notification \"${1%.*}.gif successfully converted and saved\" with title \"MOV2GIF SUCCESS!\""};video_to_gif'
-#
+# claude — alias to cc so both invoke session management (save/resume per tmux pane)
+# cc/cls/cr are injected by Claude Code shell integration
+alias claude=cc
 
 # just
 alias jb="just build"
 alias jt="just test"
 alias jwt="just watch-test"
 alias jtd="just testdata"
-alias jcu="just dcu" # docker compose up
-alias jcd="just dcd" # docker compose down
-alias jcr="just drs" # docker compose restart local project container
-
-
+alias jcu="just dcu"
+alias jcd="just dcd"
+alias jcr="just drs"

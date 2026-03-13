@@ -1,41 +1,42 @@
 #!/bin/sh
-# HISTFILE="$XDG_DATA_HOME"/zsh/history
-HISTSIZE=1000000
-SAVEHIST=1000000
+
 export EDITOR="nvim"
 
-export PATH="$HOME/.local/bin":$PATH
-export HOMEBREW_NO_ANALYTICS=1
-export HOMEBREW_NO_ENV_HINTS=1
+export PATH="$HOME/.local/bin:$PATH"
+
 eval "$(zoxide init zsh)"
 
 # Go
 export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:~/go/bin
+export PATH=$PATH:$HOME/go/bin
 
-# Zig
-export PATH=$PATH:~/zig
+# Work
+export GOPRIVATE=github.com/Stark-Tech-Group/*
+export GONOSUMDB=github.com/Stark-Tech-Group/*
 
 # kubectl
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-source <(kubectl completion zsh)
 
-
-export GPG_TTY=$(tty)
-
-# Prevent macOS from creating ._ AppleDouble files on external volumes
-export COPYFILE_DISABLE=1
-
-# nvm
-# TODO: add to alias to engage when using nvm
+# Node — lazy load nvm behind nodemode (avoids ~350ms startup cost)
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nodemode() {
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  echo "nvm loaded. node: $(node --version 2>/dev/null)"
+  unfunction nodemode
+}
 
-eval "$(fzf --zsh)"
+# Java — lazy load sdkman behind javamode
+javamode() {
+  export SDKMAN_DIR="$HOME/.sdkman"
+  [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+  echo "sdkman loaded. java: $(java -version 2>&1 | head -1)"
+}
 
-export PATH=$PATH:~/tools
-export PATH=$PATH:~/tools/kafka/bin
-
-# sdkman
-source "$HOME/.sdkman/bin/sdkman-init.sh"
+# kubectl completion — lazy load on first k invocation
+k() {
+  source <(kubectl completion zsh) 2>/dev/null
+  unfunction k
+  alias k=kubectl
+  kubectl "$@"
+}
