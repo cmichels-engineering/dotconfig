@@ -46,14 +46,7 @@ alias d="docker"
 alias dc="docker compose"
 
 # kubectl
-alias kc=kubecolor
 alias kk="kubectl kustomize"
-
-# terraform
-alias tf="terraform"
-alias tfi="terraform init"
-alias tfa="terraform apply"
-alias tfp="terraform plan"
 
 # tools
 alias cat="bat"
@@ -69,9 +62,9 @@ alias gosingle="go test ./internal/events -run TestEventsSuiteRunner/TestEventSe
 # lazygit
 alias lg="lazygit"
 
-# claude — alias to cc so both invoke session management (save/resume per tmux pane)
-# cc/cls/cr are injected by Claude Code shell integration
-alias claude=cc
+# claude — alias to ccs for session management (save/resume per tmux pane)
+# ccs/cls/cr live in ~/projects/personal/claude-config/bin/ symlinked to ~/bin/
+alias claude=ccs
 
 # just
 alias jb="just build"
