@@ -17,13 +17,14 @@ export GONOSUMDB=github.com/Stark-Tech-Group/*
 # kubectl
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
-# Node — lazy load nvm behind nodemode (avoids ~350ms startup cost)
+# Node — default node on PATH immediately, nvm lazy-loads on first use
+# Sync: version must match WSLfile NODE_VERSION (currently lts/jod = Node 22)
 export NVM_DIR="$HOME/.nvm"
-nodemode() {
+export PATH="$NVM_DIR/versions/node/v22.22.1/bin:$PATH"
+nvm() {
+  unfunction nvm
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-  echo "nvm loaded. node: $(node --version 2>/dev/null)"
-  unfunction nodemode
+  nvm "$@"
 }
 
 # Java — lazy load sdkman behind javamode
