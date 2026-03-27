@@ -7,7 +7,7 @@ return {
   -- "doums/darcula",
   'xiantang/darcula-dark.nvim',
   priority = 1000,
-  opts = ...,
+  opts = {},
   config = function()
     -- vim.cmd.colorscheme('tokyonight')
     -- vim.cmd.colorscheme("dracula")

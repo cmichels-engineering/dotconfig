@@ -1,9 +1,12 @@
 return {
   'mistricky/codesnap.nvim',
+  enabled = false,
+  cond = false, -- requires GLIBC_2.38, not available on WSL2/Ubuntu 22.04
   build = 'make',
   event = 'VeryLazy',
   config = function()
-    local codesnap = require('codesnap')
+    local ok, codesnap = pcall(require, 'codesnap')
+    if not ok then return end
     codesnap.setup({
       mac_window_bar = true,
       title = 'my-code',

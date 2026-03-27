@@ -246,6 +246,7 @@ return {
       jsonls = {},
       postgres_lsp = {
         filetypes = { 'sql' },
+        root_dir = require('lspconfig.util').root_pattern('*.sql', '.git'),
       },
 
       -- rust_analyzer = {},
@@ -265,36 +266,29 @@ return {
       --
 
       lua_ls = {
-        -- cmd = { ... },
-        -- filetypes = { ... },
-        -- capabilities = {},
         settings = {
           Lua = {
             completion = {
               callSnippet = 'Replace',
             },
-            -- fixes vim unknown variable
-            workspace = {
-              library = vim.api.nvim_get_runtime_file('', true),
-            },
-            -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+            -- lazydev.nvim handles the workspace library (faster than nvim_get_runtime_file)
             -- diagnostics = { disable = { 'missing-fields' } },
           },
         },
       },
-      solargraph = {
-        settings = {
-          solargraph = {
-            diagnostics = true,
-            completion = true,
-            hover = true,
-            formatting = false,
-            references = true,
-            rename = true,
-            symbols = true,
-          },
-        },
-      },
+      -- solargraph = { -- requires Ruby/gem, enable when Ruby is installed
+      --   settings = {
+      --     solargraph = {
+      --       diagnostics = false, -- standardrb in nvim-lint handles linting
+      --       completion = true,
+      --       hover = true,
+      --       formatting = false,
+      --       references = true,
+      --       rename = true,
+      --       symbols = true,
+      --     },
+      --   },
+      -- },
     }
 
     -- Ensure the servers and tools above are installed
@@ -321,7 +315,7 @@ return {
       'prettier',
       'markdownlint',
       'shellcheck',
-      'standardrb',
+      -- 'standardrb', -- requires Ruby/gem, enable when Ruby is installed
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

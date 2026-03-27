@@ -21,7 +21,6 @@ return { -- Highlight, edit, and navigate code
       'vim',
       'vimdoc',
       'go',
-      'bash',
       'python',
       'typescript',
       'ruby',

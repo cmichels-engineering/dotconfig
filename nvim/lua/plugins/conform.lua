@@ -30,7 +30,7 @@ return { -- Autoformat
     end,
     formatters_by_ft = {
       lua = { 'stylua' },
-      -- go = { 'gofumpt' },
+      go = { 'gofumpt' },
       python = { 'ruff_format' },
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
       typescript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -39,7 +39,7 @@ return { -- Autoformat
       json = { 'prettierd', 'prettier', stop_after_first = true },
       yaml = { 'prettierd', 'prettier', stop_after_first = true },
       markdown = { 'prettierd', 'prettier', stop_after_first = true },
-      ruby = { 'starndardrb' },
+      ruby = { 'standardrb' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
       --

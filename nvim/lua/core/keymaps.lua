@@ -24,11 +24,5 @@ keymap.set('n', '<right>', '<cmd>echo "Use l!"<CR>', { desc = 'good vimming' })
 keymap.set('n', '<up>', '<cmd>echo "Use j!"<CR>', { desc = 'good vimming' })
 keymap.set('n', '<down>', '<cmd>echo "Use k!"<CR>', { desc = 'good vimming' })
 
--- easier window nav
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- window nav handled by vim-tmux-navigator plugin
 
--- codesnap
-keymap.set('n', '<leader>cs', ':CodeSnap<CR>', { desc = '[C]ode[S]nap' })
