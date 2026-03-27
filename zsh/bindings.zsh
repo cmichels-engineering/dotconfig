@@ -1,5 +1,5 @@
 
-#customr
+# custom
 bindkey "^B" vi-backword-blank-word
 bindkey "^W" vi-forward-blank-word
 bindkey "^Y" vi-yank-whole-line

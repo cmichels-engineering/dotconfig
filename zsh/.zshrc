@@ -35,7 +35,6 @@ plug "$HOME/.config/zsh/aliases.zsh"
 plug "$HOME/.config/zsh/exports.zsh"
 plug "$HOME/.config/zsh/functions.zsh"
 plug "$HOME/.config/zsh/bindings.zsh"
-plug "$HOME/.config/zsh/prompt.zsh"
 
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
