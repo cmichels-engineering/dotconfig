@@ -1,0 +1,202 @@
+#!/usr/bin/env bash
+# claude-switch: fuzzy jump to a tmux window with Claude session context
+# Phase 2: enriched with Claude Code session metadata (last prompt, branch, age, depth)
+
+set -euo pipefail
+
+PANE_SESSIONS_DIR="$HOME/.claude/pane-sessions"
+PROJECTS_DIR="$HOME/.claude/projects"
+
+# ── Colors (Catppuccin Mocha) ───────────────────────────────────────
+C_DIM=$'\033[38;2;108;112;134m'    # overlay0
+C_YELLOW=$'\033[38;2;249;226;175m' # yellow
+C_SUBTEXT=$'\033[38;2;147;153;178m' # subtext0
+C_GREEN=$'\033[38;2;166;227;161m'  # green
+C_MAUVE=$'\033[38;2;203;166;247m'  # mauve
+C_PEACH=$'\033[38;2;250;179;135m'  # peach
+C_RESET=$'\033[0m'
+
+# ── Relative time helper ────────────────────────────────────────────
+_relative_time() {
+  local iso="$1"
+  [[ -z "$iso" || "$iso" == "—" ]] && echo "—" && return
+  local ts
+  ts=$(date -d "$iso" +%s 2>/dev/null) || { echo "—"; return; }
+  local now diff
+  now=$(date +%s)
+  diff=$(( now - ts ))
+  if (( diff < 60 )); then
+    echo "${diff}s ago"
+  elif (( diff < 3600 )); then
+    echo "$(( diff / 60 ))m ago"
+  elif (( diff < 86400 )); then
+    echo "$(( diff / 3600 ))h ago"
+  else
+    echo "$(( diff / 86400 ))d ago"
+  fi
+}
+
+# ── Session metadata extractor ──────────────────────────────────────
+# Args: <pane_id> <cwd>
+# Outputs pipe-delimited: title|last_prompt|branch|last_ts|depth
+_session_meta() {
+  local pane_id="$1" cwd="$2"
+  local pane_num="${pane_id#%}"
+  local session_file="$PANE_SESSIONS_DIR/$pane_num.json"
+  local empty="—|—|—|—|—"
+
+  [[ -f "$session_file" ]] || { echo "$empty"; return; }
+
+  local sid
+  sid=$(jq -r '.sessionId // ""' "$session_file" 2>/dev/null)
+  [[ -z "$sid" ]] && { echo "$empty"; return; }
+
+  # Derive project dir from cwd: /home/kuda/foo → -home-kuda-foo
+  local project_dir
+  project_dir=$(echo "$cwd" | sed 's|/|-|g')
+  local jsonl="$PROJECTS_DIR/$project_dir/$sid.jsonl"
+
+  [[ -f "$jsonl" ]] || { echo "$empty"; return; }
+
+  # Fast extraction — no full file scan
+  local title last_prompt branch last_ts depth
+
+  title=$(head -1 "$jsonl" | jq -r 'select(.type == "custom-title") | .customTitle // ""' 2>/dev/null)
+  [[ -z "$title" ]] && title="—"
+
+  # Try last-prompt record first (exists in closed sessions), then fall back to
+  # the last user-typed message (content is a string, not a tool_result array)
+  last_prompt=$(tail -5 "$jsonl" | jq -r 'select(.type == "last-prompt") | .lastPrompt // ""' 2>/dev/null | tail -1)
+  if [[ -z "$last_prompt" ]]; then
+    last_prompt=$(tac "$jsonl" | grep '"type":"user"' | jq -r '
+      select(.message.content | type == "string") | .message.content
+    ' 2>/dev/null | head -1)
+    # Strip leading whitespace and newlines
+    last_prompt=$(echo "$last_prompt" | sed 's/^[[:space:]]*//' | head -1)
+  fi
+  [[ -z "$last_prompt" ]] && last_prompt="—"
+  # Truncate long prompts
+  (( ${#last_prompt} > 50 )) && last_prompt="${last_prompt:0:47}..."
+
+  # Last user message (any type) for timestamp and branch
+  local last_user_line
+  last_user_line=$(tac "$jsonl" | grep -m1 '"type":"user"' 2>/dev/null || true)
+  if [[ -n "$last_user_line" ]]; then
+    branch=$(echo "$last_user_line" | jq -r '.gitBranch // ""' 2>/dev/null)
+    last_ts=$(echo "$last_user_line" | jq -r '.timestamp // ""' 2>/dev/null)
+  else
+    branch="—"
+    last_ts="—"
+  fi
+  [[ -z "$branch" ]] && branch="—"
+  [[ -z "$last_ts" ]] && last_ts="—"
+
+  depth=$(grep -c '"type":"user"' "$jsonl" 2>/dev/null || echo "0")
+
+  echo "${title}|${last_prompt}|${branch}|${last_ts}|${depth}"
+}
+
+# ── Context header renderer ─────────────────────────────────────────
+# Called by fzf transform-header: $0 --context <jira> <dir> <title> <prompt> <branch> <age> <depth>
+if [[ "${1:-}" == "--context" ]]; then
+  jira="${2:-—}"
+  dir="${3:-—}"
+  title="${4:-—}"
+  prompt="${5:-—}"
+  branch="${6:-—}"
+  age="${7:-—}"
+  depth="${8:-0}"
+
+  # Ticket line (2-line wrap)
+  l1="${jira:0:40}"
+  l2="${jira:40:80}"
+
+  # Depth label
+  if [[ "$depth" == "0" || "$depth" == "—" ]]; then
+    depth_label="no session"
+  elif (( depth <= 5 )); then
+    depth_label="${depth} msgs (fresh)"
+  elif (( depth <= 20 )); then
+    depth_label="${depth} msgs"
+  else
+    depth_label="${depth} msgs (deep)"
+  fi
+
+  printf '%s' \
+    " ${C_DIM}──────────────────────────────────────────${C_RESET}" \
+    $'\n' \
+    "${C_DIM}  ticket  ${C_RESET}${C_YELLOW}${l1}${C_RESET}" \
+    $'\n' \
+    "${C_DIM}          ${C_RESET}${C_YELLOW}${l2}${C_RESET}" \
+    $'\n' \
+    "${C_DIM}  dir     ${C_RESET}${C_SUBTEXT}${dir}${C_RESET}" \
+    $'\n' \
+    " ${C_DIM}──────────────────────────────────────────${C_RESET}" \
+    $'\n' \
+    "${C_DIM}  prompt  ${C_RESET}${C_GREEN}${prompt}${C_RESET}" \
+    $'\n' \
+    "${C_DIM}  branch  ${C_RESET}${C_MAUVE}${branch}${C_RESET}" \
+    $'\n' \
+    "${C_DIM}  active  ${C_RESET}${C_PEACH}${age}${C_RESET}${C_DIM}  ·  ${C_RESET}${C_PEACH}${depth_label}${C_RESET}"
+  exit 0
+fi
+
+# ── Build window list ───────────────────────────────────────────────
+_build_list() {
+  printf " idx  window          dir           \t\t\t\t\t\t\t\t\t\n"
+  printf " ───  ──────────────  ──────────────\t\t\t\t\t\t\t\t\t\n"
+
+  tmux list-windows -F "#{window_index}|#{window_name}|#{pane_id}|#{pane_current_path}" | \
+  while IFS='|' read -r idx name pane_id cwd; do
+    jira_info="—"
+    if [[ -f "${cwd}/.jira-context" ]]; then
+      key=$(jq -r '.key // ""' "${cwd}/.jira-context" 2>/dev/null)
+      summary=$(jq -r '.summary // ""' "${cwd}/.jira-context" 2>/dev/null)
+      [[ -n "$key" ]] && jira_info="${key}: ${summary}"
+    fi
+
+    cwd_display=$(basename "$cwd" | sed 's/stark-//; s/-/ /g')
+
+    # Session metadata
+    local meta title prompt branch last_ts depth age
+    meta=$(_session_meta "$pane_id" "$cwd")
+    IFS='|' read -r title prompt branch last_ts depth <<< "$meta"
+    age=$(_relative_time "$last_ts")
+
+    # fzf fields (tab-delimited):
+    # {1}=display  {2}=idx  {3}=pane_id  {4}=jira  {5}=dir
+    # {6}=title  {7}=prompt  {8}=branch  {9}=age  {10}=depth
+    printf "%-3s  %-14s  %-14s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
+      "${idx}" "${name:0:14}" "${cwd_display:0:14}" \
+      "${idx}" "${pane_id}" "${jira_info}" "${cwd_display}" \
+      "${title}" "${prompt}" "${branch}" "${age}" "${depth}"
+  done
+}
+
+INIT_HEADER=$("$0" --context "—" "—" "—" "—" "—" "—" "0")
+
+selected=$(_build_list | fzf \
+  --header-lines=2 \
+  --delimiter='\t' \
+  --with-nth=1 \
+  --layout=reverse-list \
+  --header="$INIT_HEADER" \
+  --bind="focus:transform-header($HOME/bin/claude-switch --context {4} {5} {6} {7} {8} {9} {10})" \
+  --border-label='[ ↑↓:navigate · enter:jump · esc:cancel · shift-↑↓:scroll-preview ]' \
+  --border-label-pos='bottom' \
+  --preview='tmux capture-pane -p -e -t {3} 2>/dev/null | tail -50' \
+  --preview-window='right:78%:wrap:border-left:follow' \
+  --bind='shift-up:preview-up,shift-down:preview-down' \
+  --bind='ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down' \
+  --height='100%' \
+  --border='rounded' \
+  --prompt='  ' \
+  --pointer='▶' \
+  --info='inline' \
+  --color='header:italic:#6c7086,border:#89b4fa,pointer:#f9e2af,hl:#cba6f7,hl+:#cba6f7,label:#6c7086' \
+) || true
+
+[[ -z "$selected" ]] && exit 0
+
+window_idx=$(printf '%s' "$selected" | cut -f2)
+tmux select-window -t "${window_idx}"
