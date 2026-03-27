@@ -1,6 +1,16 @@
 #!/bin/bash
+# DEPRECATED: This script is superseded by os-setup (~/projects/personal/os-setup).
+# Kept for reference only. Use `./setup.sh` from os-setup instead.
 
+DOTCONFIG="$(cd "$(dirname "$0")" && pwd)"
 
+# ~/bin scripts (symlink all executables from dotconfig/bin)
+mkdir -p "$HOME/bin"
+for f in "$DOTCONFIG/bin"/*; do
+  [ -f "$f" ] || continue
+  ln -sf "$f" "$HOME/bin/$(basename "$f")"
+  echo "linked ~/bin/$(basename "$f")"
+done
 
 # sdkman
 if [ -d ~/.sdkman ]; then
