@@ -12,6 +12,7 @@ return {
       },
       keymaps = {
         ['<C-h>'] = false,
+        ['<C-l>'] = false,
         ['yp'] = {
           desc = 'Copy filepath to system clipboard',
           callback = function()

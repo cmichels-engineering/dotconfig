@@ -47,3 +47,6 @@ elif grep -qi microsoft /proc/version 2>/dev/null; then
   plug "$HOME/.config/zsh/platform/wsl.zsh"
   plug "$HOME/.config/zsh/platform/wsl-aliases.zsh"
 fi
+
+# add Pulumi to the PATH
+export PATH=$PATH:/home/kuda/.pulumi/bin
