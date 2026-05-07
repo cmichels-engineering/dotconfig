@@ -82,3 +82,4 @@ yazi/*.toml-*
 yazi/plugins/custom-shell.yazi/yazi_cmd_history
 yazi/flavors/*/
 yazi/plugins/*/
+zsh/keys.zsh

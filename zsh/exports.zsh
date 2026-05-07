@@ -14,6 +14,9 @@ export PATH=$PATH:$HOME/go/bin
 export GOPRIVATE=github.com/Stark-Tech-Group/*
 export GONOSUMDB=github.com/Stark-Tech-Group/*
 
+
+#atlassian
+
 # kubectl
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
