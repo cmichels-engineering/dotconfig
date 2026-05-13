@@ -2,6 +2,9 @@
 # WSL2-specific aliases
 # Sourced automatically on WSL2 by .zshrc
 
-# Optelligent dev tools (machine-local paths)
-alias dc-dev='/home/kuda/projects/optelligent/dev/dev'
-alias mc='/home/kuda/projects/optelligent/multi-compose/mc'
+# Project-local tooling paths (machine-local overrides supported)
+: "${DOT_WORK_ROOT:=$HOME/projects}"
+: "${DOT_PRIMARY_PROJECT:=work}"
+
+alias dc-dev="${DOT_WORK_ROOT}/${DOT_PRIMARY_PROJECT}/dev/dev"
+alias mc="${DOT_WORK_ROOT}/${DOT_PRIMARY_PROJECT}/multi-compose/mc"

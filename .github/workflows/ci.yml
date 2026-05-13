@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Shell syntax checks
+        run: |
+          set -e
+          for f in bin/* zsh/*.zsh zsh/platform/*.zsh; do
+            if [ -f "$f" ]; then
+              bash -n "$f"
+            fi
+          done
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: YAML parse checks
+        run: |
+          set -e
+          python - <<'PY'
+          import pathlib
+          import yaml
+
+          root = pathlib.Path('.')
+          files = list(root.rglob('*.yml')) + list(root.rglob('*.yaml'))
+          for p in files:
+            if '.git/' in str(p):
+              continue
+            with p.open('r', encoding='utf-8') as f:
+              yaml.safe_load(f)
+          print(f"Parsed {len(files)} YAML files")
+          PY
+
+      - name: Sensitive identifier guard
+        run: |
+          set -e
+          if git grep -n -I -i -E '(starktechgroup\.atlassian\.net|stark-tech-group|starkmichelsc|controlfreak\.atlassian\.net)'; then
+            echo "Blocked: internal identifiers found in tracked files"
+            exit 1
+          fi

@@ -1,10 +1,11 @@
 # git
 function clone() {
+  local org="${DOT_GH_ORG:-example-org}"
   if [[ -z "$1" ]]; then
     echo "Repository name is required" 
   else
-    echo "cloning repo stark-tech-group/$1"
-    gh repo clone "stark-tech-group/$1"
+    echo "cloning repo ${org}/$1"
+    gh repo clone "${org}/$1"
   fi
 }
 function gcbb() {
@@ -55,8 +56,10 @@ vnote() {
 
 # pulumi blob storage
 function p_azure_key(){
-    export AZURE_STORAGE_KEY=$(az storage account keys list --account-name optelligentinfra --resource-group optelligent_infra --query "[0].value" -o tsv)
+    local account="${DOT_AZURE_STORAGE_ACCOUNT:-exampleinfra}"
+    local group="${DOT_AZURE_STORAGE_GROUP:-example_infra}"
+    export AZURE_STORAGE_KEY=$(az storage account keys list --account-name "$account" --resource-group "$group" --query "[0].value" -o tsv)
 }
 function p_azure_account(){
-    export AZURE_STORAGE_ACCOUNT=optelligentinfra
+    export AZURE_STORAGE_ACCOUNT="${DOT_AZURE_STORAGE_ACCOUNT:-exampleinfra}"
 }

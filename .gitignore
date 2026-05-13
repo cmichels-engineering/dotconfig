@@ -48,6 +48,7 @@ devEx/
 
 # PR monitor runtime state
 pr-monitor/status.json
+pr-monitor/config.yaml
 
 # Raycast extensions (50MB, re-downloadable)
 raycast/extensions/
@@ -83,3 +84,4 @@ yazi/plugins/custom-shell.yazi/yazi_cmd_history
 yazi/flavors/*/
 yazi/plugins/*/
 zsh/keys.zsh
+zsh/local.zsh

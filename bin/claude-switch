@@ -155,7 +155,7 @@ _build_list() {
       [[ -n "$key" ]] && jira_info="${key}: ${summary}"
     fi
 
-    cwd_display=$(basename "$cwd" | sed 's/stark-//; s/-/ /g')
+    cwd_display=$(basename "$cwd" | sed 's/-/ /g')
 
     # Session metadata
     local meta title prompt branch last_ts depth age

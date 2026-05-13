@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# Load machine-local overrides (symlink-safe via ~/.config/zsh/local.zsh)
+[[ -f "$HOME/.config/zsh/local.zsh" ]] && source "$HOME/.config/zsh/local.zsh"
+
 export EDITOR="nvim"
 
 export PATH="$HOME/.local/bin:$PATH"
@@ -11,8 +14,9 @@ export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/go/bin
 
 # Work
-export GOPRIVATE=github.com/Stark-Tech-Group/*
-export GONOSUMDB=github.com/Stark-Tech-Group/*
+export DOT_GH_ORG="${DOT_GH_ORG:-example-org}"
+export GOPRIVATE="${GOPRIVATE:-github.com/${DOT_GH_ORG}/*}"
+export GONOSUMDB="${GONOSUMDB:-github.com/${DOT_GH_ORG}/*}"
 
 
 #atlassian
