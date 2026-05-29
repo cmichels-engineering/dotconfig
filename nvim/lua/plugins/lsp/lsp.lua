@@ -217,9 +217,7 @@ return {
               useany = true,
               nilness = true,
             },
-            formatting = {
-              gofumpt = true,
-            },
+            gofumpt = true,
             hints = {
               assignVariableTypes = true,
               compositeLiteralFields = true,
