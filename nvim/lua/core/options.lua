@@ -110,6 +110,3 @@ vim.o.termguicolors = true
 -- add column at column 80 for coding
 -- :help colorcolumn
 vim.o.colorcolumn = '80'
--- set column color via highlight group
--- :help nvim_set_hl
-vim.api.nvim_set_hl(0, 'ColorColumn', { bg = '#2d2d2d' })
