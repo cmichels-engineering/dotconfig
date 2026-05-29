@@ -1,21 +1,20 @@
 return {
   'folke/snacks.nvim',
+  -- Loaded early so it can install the vim.ui.select / vim.ui.input overrides
+  -- at setup. Only lightweight proxies install at startup; the picker UI
+  -- itself lazy-loads on first use.
+  lazy = false,
+  priority = 1000,
   opts = {
-    gh = {
-      -- your gh configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
+    -- Replaces vim.ui.input (formerly handled by dressing.nvim)
+    input = { enabled = true },
+    gh = {},
     picker = {
+      enabled = true,
+      ui_select = true, -- replaces vim.ui.select (formerly dressing/telescope-ui-select)
       sources = {
-        gh_issue = {
-          -- your gh_issue picker configuration comes here
-          -- or leave it empty to use the default settings
-        },
-        gh_pr = {
-          -- your gh_pr picker configuration comes here
-          -- or leave it empty to use the default settings
-        },
+        gh_issue = {},
+        gh_pr = {},
       },
     },
   },
