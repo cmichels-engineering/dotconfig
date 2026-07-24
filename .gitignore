@@ -46,7 +46,7 @@ devEx/
 *.db-shm
 *.db-wal
 
-# PR monitor runtime state
+# PR monitor runtime state + real config (org/team names — see config.example.yaml)
 pr-monitor/status.json
 pr-monitor/config.yaml
 
@@ -83,5 +83,9 @@ yazi/*.toml-*
 yazi/plugins/custom-shell.yazi/yazi_cmd_history
 yazi/flavors/*/
 yazi/plugins/*/
+# Secrets (API tokens) — copy from old machine, never commit
 zsh/keys.zsh
 zsh/local.zsh
+
+# Machine-local completions (symlinks into project repos)
+zsh/completions/_mc

@@ -1,0 +1,217 @@
+#compdef ghostty
+
+# Ghostty terminal emulator zsh completion
+# Actions use +action syntax; config keys are available as --key=value flags
+
+local -a actions
+actions=(
+  '+version:print version information'
+  '+help:show help'
+  '+list-fonts:list available fonts'
+  '+list-keybinds:list current or default keybindings'
+  '+list-themes:list available themes'
+  '+list-colors:list terminal colors'
+  '+list-actions:list all available keybind actions'
+  '+show-config:show current configuration'
+  '+validate-config:validate configuration file'
+  '+show-face:show font face for a codepoint'
+  '+crash-report:manage crash reports'
+)
+
+local -a config_keys
+config_keys=(
+  '--abnormal-command-exit-runtime='
+  '--adjust-box-thickness='
+  '--adjust-cell-height='
+  '--adjust-cell-width='
+  '--adjust-cursor-height='
+  '--adjust-cursor-thickness='
+  '--adjust-font-baseline='
+  '--adjust-overline-position='
+  '--adjust-overline-thickness='
+  '--adjust-strikethrough-position='
+  '--adjust-strikethrough-thickness='
+  '--adjust-underline-position='
+  '--adjust-underline-thickness='
+  '--adw-toolbar-style='
+  '--alpha-blending='
+  '--app-notifications='
+  '--auto-update='
+  '--auto-update-channel='
+  '--background='
+  '--background-blur='
+  '--background-opacity='
+  '--bold-is-bright='
+  '--class='
+  '--click-repeat-interval='
+  '--clipboard-paste-bracketed-safe='
+  '--clipboard-paste-protection='
+  '--clipboard-read='
+  '--clipboard-trim-trailing-spaces='
+  '--clipboard-write='
+  '--command='
+  '--config-default-files='
+  '--config-file='
+  '--confirm-close-surface='
+  '--copy-on-select='
+  '--cursor-click-to-move='
+  '--cursor-color='
+  '--cursor-invert-fg-bg='
+  '--cursor-opacity='
+  '--cursor-style='
+  '--cursor-style-blink='
+  '--cursor-text='
+  '--custom-shader='
+  '--custom-shader-animation='
+  '--desktop-notifications='
+  '--enquiry-response='
+  '--focus-follows-mouse='
+  '--font-codepoint-map='
+  '--font-family='
+  '--font-family-bold='
+  '--font-family-bold-italic='
+  '--font-family-italic='
+  '--font-feature='
+  '--font-size='
+  '--font-style='
+  '--font-style-bold='
+  '--font-style-bold-italic='
+  '--font-style-italic='
+  '--font-synthetic-style='
+  '--font-thicken='
+  '--font-thicken-strength='
+  '--font-variation='
+  '--font-variation-bold='
+  '--font-variation-bold-italic='
+  '--font-variation-italic='
+  '--foreground='
+  '--freetype-load-flags='
+  '--fullscreen='
+  '--grapheme-width-method='
+  '--gtk-adwaita='
+  '--gtk-custom-css='
+  '--gtk-gsk-renderer='
+  '--gtk-opengl-debug='
+  '--gtk-single-instance='
+  '--gtk-tabs-location='
+  '--gtk-titlebar='
+  '--gtk-titlebar-hide-when-maximized='
+  '--gtk-wide-tabs='
+  '--image-storage-limit='
+  '--initial-command='
+  '--initial-window='
+  '--keybind='
+  '--link-url='
+  '--linux-cgroup='
+  '--linux-cgroup-hard-fail='
+  '--linux-cgroup-memory-limit='
+  '--linux-cgroup-processes-limit='
+  '--macos-auto-secure-input='
+  '--macos-icon='
+  '--macos-icon-frame='
+  '--macos-icon-ghost-color='
+  '--macos-icon-screen-color='
+  '--macos-non-native-fullscreen='
+  '--macos-option-as-alt='
+  '--macos-secure-input-indication='
+  '--macos-titlebar-proxy-icon='
+  '--macos-titlebar-style='
+  '--macos-window-shadow='
+  '--maximize='
+  '--minimum-contrast='
+  '--mouse-hide-while-typing='
+  '--mouse-scroll-multiplier='
+  '--mouse-shift-capture='
+  '--osc-color-report-format='
+  '--palette='
+  '--quick-terminal-animation-duration='
+  '--quick-terminal-autohide='
+  '--quick-terminal-position='
+  '--quick-terminal-screen='
+  '--quick-terminal-space-behavior='
+  '--quit-after-last-window-closed='
+  '--quit-after-last-window-closed-delay='
+  '--resize-overlay='
+  '--resize-overlay-duration='
+  '--resize-overlay-position='
+  '--scrollback-limit='
+  '--selection-background='
+  '--selection-foreground='
+  '--selection-invert-fg-bg='
+  '--shell-integration='
+  '--shell-integration-features='
+  '--split-divider-color='
+  '--term='
+  '--theme='
+  '--title='
+  '--title-report='
+  '--unfocused-split-fill='
+  '--unfocused-split-opacity='
+  '--vt-kam-allowed='
+  '--wait-after-command='
+  '--window-colorspace='
+  '--window-decoration='
+  '--window-height='
+  '--window-inherit-font-size='
+  '--window-inherit-working-directory='
+  '--window-new-tab-position='
+  '--window-padding-balance='
+  '--window-padding-color='
+  '--window-padding-x='
+  '--window-padding-y='
+  '--window-position-x='
+  '--window-position-y='
+  '--window-save-state='
+  '--window-step-resize='
+  '--window-subtitle='
+  '--window-theme='
+  '--window-title-font-family='
+  '--window-titlebar-background='
+  '--window-titlebar-foreground='
+  '--window-vsync='
+  '--window-width='
+  '--working-directory='
+  '--x11-instance-name='
+)
+
+_ghostty() {
+  local state
+
+  # Handle +action as the first argument
+  if [[ ${words[2]} == +* ]] || [[ ${#words[@]} -eq 2 && $words[2] == +* ]]; then
+    # Already have an action, complete its flags
+    case ${words[2]} in
+      +list-keybinds)
+        _arguments \
+          '--default[show default keybinds]' \
+          '--plain[disable formatting]' \
+          '--docs[show documentation for each action]'
+        return
+        ;;
+      +show-config)
+        _arguments \
+          '--default[show default config instead of user config]' \
+          '--docs[include documentation comments]'
+        return
+        ;;
+      +list-themes|+list-fonts|+list-colors|+list-actions|+version|+help|+validate-config|+crash-report)
+        return
+        ;;
+    esac
+  fi
+
+  # Complete actions (+action) and config flags (--key=value)
+  _arguments -C \
+    '-e[run command inside terminal]:command:_command_names' \
+    ':action or option:->main'
+
+  case $state in
+    main)
+      # Offer +actions and --config-keys
+      _describe 'action' actions
+      compadd -S '' -- "${config_keys[@]}"
+      ;;
+  esac
+}
+
+_ghostty "$@"
