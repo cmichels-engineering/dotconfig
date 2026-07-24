@@ -21,6 +21,8 @@ return { -- Highlight, edit, and navigate code
       'python',
       'typescript',
       'ruby',
+      'sql',
+      'yaml',
     }
 
     -- On the main branch, highlighting is a Neovim builtin (`:h treesitter-highlight`).
