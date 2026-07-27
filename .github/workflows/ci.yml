@@ -53,7 +53,8 @@ jobs:
       - name: Sensitive identifier guard
         run: |
           set -e
-          if git grep -n -I -i -E '(starktechgroup\.atlassian\.net|stark-tech-group|starkmichelsc|controlfreak\.atlassian\.net)'; then
+          # exclude this workflow — the grep pattern itself contains the guarded strings
+          if git grep -n -I -i -E '(starktechgroup\.atlassian\.net|stark-tech-group|starkmichelsc|controlfreak\.atlassian\.net)' -- ':!.github/workflows/ci.yml'; then
             echo "Blocked: internal identifiers found in tracked files"
             exit 1
           fi

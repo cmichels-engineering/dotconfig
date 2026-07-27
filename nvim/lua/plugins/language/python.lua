@@ -1,17 +1,4 @@
 return {
-  -- Virtual environment selector
-  {
-    'linux-cultist/venv-selector.nvim',
-    dependencies = { 'neovim/nvim-lspconfig', 'nvim-telescope/telescope.nvim' },
-    ft = 'python',
-    opts = {
-      name = { 'venv', '.venv', 'env', '.env' },
-    },
-    keys = {
-      { '<leader>vs', '<cmd>VenvSelect<cr>', desc = 'Select VirtualEnv' },
-    },
-  },
-
   -- Python debugging
   {
     'mfussenegger/nvim-dap-python',

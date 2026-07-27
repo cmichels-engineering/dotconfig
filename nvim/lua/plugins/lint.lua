@@ -6,11 +6,12 @@ return {
     config = function()
       local lint = require 'lint'
       lint.linters_by_ft = {
-        typescript = { 'eslint_d' },
-        javascript = { 'eslint_d' },
+        -- TypeScript/JavaScript linting is handled by the eslint LSP
+        -- (with fix-on-save), so it is intentionally omitted here.
+        -- Python linting is handled by the ruff LSP (diagnostics + code
+        -- actions); formatting stays in conform via ruff_format.
         markdown = { 'markdownlint' },
         go = { 'golangcilint' },
-        python = { 'ruff' },
         sh = { 'shellcheck' },
         bash = { 'shellcheck' },
         zsh = { 'shellcheck' },
